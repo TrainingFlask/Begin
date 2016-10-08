@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 
+
 app = Flask(__name__)
 
 app.secret_key = 'lol'
@@ -19,8 +20,7 @@ class User(db.Model):
     name = db.Column(db.Unicode(30), index=True, unique=True)
     password = db.Column(db.Unicode(30))
     date = db.column(db.DateTime)
-    gender = db.Column(db.UnicodeText(30))
-
+    gender = db.Column(db.String(10))
 
     def __init__(self, name, password, date=None):
         self.name = name
@@ -28,15 +28,17 @@ class User(db.Model):
         self.date = datetime.datetime.utcnow() if date is None else date
 
 
+
+
     def __repr__(self):
-        return "<User id: {0} and name: {1}>".format(self.id, self.name)
+        return "<User id: {0} and name: {1} and Gender: {2}>".format(self.id, self.name, self.gender)
 
 
 class RegisterForm(Form):
     name = StringField(label='Name')
     password = PasswordField(label='Password')
     submit = SubmitField(label='Login')
-    gender = SelectField('Gender', choices=[("M", "Male"), ("Z", "Fmale")])
+    gender = SelectField("Gender", choices=[("Mard", "Male"), ("Zan", "Fmale")],)
     date = DateTimeField(label="Born")
 
 
@@ -54,6 +56,7 @@ def login():
         password = form.password.data
         user = User(name, password)
         gender = form.gender.data
+        print(gender)
         db.session.add(user)
         db.session.commit()
         return render_template("index.html")
